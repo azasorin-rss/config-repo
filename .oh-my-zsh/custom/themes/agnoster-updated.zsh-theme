@@ -174,12 +174,17 @@ prompt_agnoster_setup() {
 prompt_agnoster_setup "$@"
 
 prompt_kubectx() {
-  CTX=$(kubectx -c)
-  if [[ $CTX == *"dev"* ]]; then
+  if command -v kubectx >/dev/null 2>&1 && [[ -f "$HOME/.kube/config" ]]; then
+    CTX_LIST=$(kubectx)
+    if ! [[ -z "$CTX_LIST" ]]; then
+      CTX=$(kubectx -c)
+      if [[ $CTX == *"dev"* ]]; then
         prompt_segment green black " ${CTX} "
-  elif [[ $CTX == *"qa"* ]]; then
-	prompt_segment yellow black " ${CTX} "
-  elif [[ $CTX == *"prod"* || $CTX == *"hc"* ]]; then
-	prompt_segment red yellow " ${CTX} "
+      elif [[ $CTX == *"qa"* ]]; then
+        prompt_segment yellow black " ${CTX} "
+      elif [[ $CTX == *"prod"* || $CTX == *"hc"* ]]; then
+        prompt_segment red yellow " ${CTX} "
+      fi
+    fi
   fi
 }
